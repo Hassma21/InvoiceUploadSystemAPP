@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<uploadSystem>
+    <customer>
+        <name>muhammed</name>
+        <ssnNumber>31233413123</ssnNumber>
+    </customer>
+    <invoiceData>
+        <item>
+            <name>Telephone</name>
+            <quantity>2</quantity>
+            <unitPrice>5000</unitPrice>
+            <Amount>10000</Amount>
+        </item>
+        <item>
+            <name>PC</name>
+            <quantity>2</quantity>
+            <unitPrice>8000</unitPrice>
+            <Amount>16000</Amount>
+        </item>
+        <totalAmount>1000</totalAmount>
+        <discount>26000.0</discount>
+        <amountToPay>null25000.0</amountToPay>
+    </invoiceData>
+</uploadSystem>

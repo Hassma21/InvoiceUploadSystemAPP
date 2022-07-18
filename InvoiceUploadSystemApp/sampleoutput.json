@@ -1,0 +1,1 @@
+{"uploadSystem":[[{"customer":{"ssnNumber":"31233413123","name":"muhammed"}},{"invoice":{"amountToPay":"25000.0","number":"12345","totalAmount":"26000.0","item":[{"unitPrice":"5000","amount":"10000","quantity":"2","name":"Telephone"},{"unitPrice":"8000","amount":"16000","quantity":"2","name":"PC"}],"discount":"1000","seri":"ABC"}}]]}
