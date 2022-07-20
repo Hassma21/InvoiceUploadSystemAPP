@@ -37,7 +37,7 @@ public class MainForm extends JFrame {
 					MainForm frame = new MainForm();
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					//bir frame bu þekilde icon verilebilir
+					// bir frame bu þekilde icon verilebilir
 					frame.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +51,7 @@ public class MainForm extends JFrame {
 	 */
 	public MainForm() {
 		setBackground(Color.GRAY);
-        connect=DbHelper.dbConnect();
+		connect = DbHelper.dbConnect();
 		setTitle("Hugin Invoice System");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 925, 525);
@@ -60,14 +60,13 @@ public class MainForm extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		
+
 		JButton btnCreateInv = new JButton("Create Invoice");
 		btnCreateInv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreateInvoice createInvoice=new CreateInvoice();
-				createInvoice.setVisible(true);
-				createInvoice.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
+				CreateInvoiceForm createInvoiceForm = new CreateInvoiceForm();
+				createInvoiceForm.setVisible(true);
+				createInvoiceForm.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 			}
 		});
 		btnCreateInv.setToolTipText("Create New Invoice For Customer");
@@ -75,13 +74,13 @@ public class MainForm extends JFrame {
 		btnCreateInv.setBackground(Color.GREEN);
 		btnCreateInv.setBounds(382, 50, 201, 44);
 		contentPane.add(btnCreateInv);
-		
+
 		JButton btnXmlInv = new JButton("Invoice Xml Operations");
 		btnXmlInv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InvoiceXml xmlInvoice=new InvoiceXml();
-				xmlInvoice.setVisible(true);
-				xmlInvoice.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
+				InvoiceXmlForm invoiceXmlForm = new InvoiceXmlForm();
+				invoiceXmlForm.setVisible(true);
+				invoiceXmlForm.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 			}
 		});
 		btnXmlInv.setToolTipText("Xml Operations");
@@ -89,13 +88,13 @@ public class MainForm extends JFrame {
 		btnXmlInv.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnXmlInv.setBounds(382, 115, 201, 44);
 		contentPane.add(btnXmlInv);
-		
+
 		JButton btnJsonInv = new JButton("Invoice Json Operations");
 		btnJsonInv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InvoiceJson invJson=new InvoiceJson();
-				invJson.setVisible(true);
-				invJson.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
+				InvoiceJsonForm invoiceJsonForm = new InvoiceJsonForm();
+				invoiceJsonForm.setVisible(true);
+				invoiceJsonForm.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 			}
 		});
 		btnJsonInv.setToolTipText("Json Operations");
@@ -103,11 +102,11 @@ public class MainForm extends JFrame {
 		btnJsonInv.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnJsonInv.setBounds(382, 184, 201, 44);
 		contentPane.add(btnJsonInv);
-		
+
 		JButton btnDeleteInv = new JButton("Delete Invoice");
 		btnDeleteInv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DeleteInvoice dltInvoice=new DeleteInvoice();
+				DeleteInvoiceForm dltInvoice = new DeleteInvoiceForm();
 				dltInvoice.setVisible(true);
 				dltInvoice.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 			}
@@ -117,7 +116,7 @@ public class MainForm extends JFrame {
 		btnDeleteInv.setBackground(Color.GREEN);
 		btnDeleteInv.setBounds(382, 258, 201, 39);
 		contentPane.add(btnDeleteInv);
-		
+
 		JButton btnExitApp = new JButton("Exit");
 		btnExitApp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -137,5 +136,5 @@ public class MainForm extends JFrame {
 		btnExitApp.setBounds(345, 370, 263, 39);
 		contentPane.add(btnExitApp);
 	}
-	
+
 }

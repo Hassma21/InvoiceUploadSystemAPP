@@ -28,33 +28,25 @@ import java.awt.Color;
 import javax.swing.JTable;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
-import java.beans.Statement;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import View.CreateInvoice;
+import View.CreateInvoiceForm;
 import javax.swing.JScrollPane;
 
 public class CustomerForm extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField txtCusName;
 	private JTextField txtFoundCusName;
-	private JFormattedTextField mskedTxtFoundCusSsý;
-	private JFormattedTextField mskedTxtCusSsý;
 	private JTable tableCustomer;
 	static String customerName;
 	static String customerssnNumber;
-	DefaultTableModel dataModel;
-	 
-	
-	
-	
-	
-	
+	static DefaultTableModel dataModel;
+	private JTextField txtFoundCusSocId;
 
 	/**
 	 * Launch the application.
@@ -84,107 +76,103 @@ public class CustomerForm extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JPanel panelFindCustomer = new JPanel();
 		panelFindCustomer.setBackground(SystemColor.activeCaptionBorder);
-		panelFindCustomer.setBounds(10, 28, 545, 412);
+		panelFindCustomer.setBounds(10, 27, 545, 412);
 		contentPane.add(panelFindCustomer);
 		panelFindCustomer.setLayout(null);
-		
+
 		txtFoundCusName = new JTextField();
 		txtFoundCusName.setToolTipText("Customer Name");
 		txtFoundCusName.setColumns(10);
 		txtFoundCusName.setBounds(86, 36, 141, 32);
 		panelFindCustomer.add(txtFoundCusName);
+
 		
-		
-		try {
-			mskedTxtFoundCusSsý = new JFormattedTextField(new MaskFormatter("###########"));
-			mskedTxtFoundCusSsý.setToolTipText("Customer Social Id");
-			mskedTxtFoundCusSsý.setBounds(394, 36, 141, 32);
-			panelFindCustomer.add(mskedTxtFoundCusSsý);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
+
 		JLabel lblCusName = new JLabel("Name : ");
 		lblCusName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblCusName.setBounds(10, 37, 94, 25);
 		panelFindCustomer.add(lblCusName);
-		
+
 		JLabel lblCusSsý = new JLabel("SSI : ");
 		lblCusSsý.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblCusSsý.setBounds(288, 36, 76, 25);
 		panelFindCustomer.add(lblCusSsý);
-		
-		
+
 		JButton btnFindCustomer = new JButton("Find");
 		btnFindCustomer.setToolTipText("Find Customer");
 		btnFindCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dataModel.setNumRows(0);
 				PreparedStatement pst = null;
-				ResultSet rs=null;
-			  try {
-				String query="SELECT * FROM customer WHERE name="+'"'+txtFoundCusName.getText()+'"'+" OR "+"ssnNumber="+'"'+mskedTxtFoundCusSsý.getText()+'"';
-				pst = DbHelper.conn.prepareStatement(query);
-				rs= pst.executeQuery();
-				while(rs.next()) {
-					Object dataObject[]= {
-							rs.getString("name"),
-							rs.getString("ssnNumber")
-					};
-					
-					dataModel.addRow(dataObject);
-				}
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}finally {
+				ResultSet rs = null;
 				try {
-					pst.close();
-					rs.close();
-					
+					if(txtFoundCusName.getText().isEmpty()) {
+						txtFoundCusName.setText(" ");
+					}
+					if(txtFoundCusSocId.getText().isEmpty()) {
+						txtFoundCusSocId.setText(" ");
+					}
+					String query = "SELECT * FROM customer WHERE name LIKE " + '"' + txtFoundCusName.getText() +"%"+ '"' + " OR "
+							+ "ssnNumber LIKE " + '"' + txtFoundCusSocId.getText() +"%"+ '"';
+					System.out.println(query);
+					pst = DbHelper.conn.prepareStatement(query);
+					rs = pst.executeQuery();
+					while (rs.next()) {
+						Object dataObject[] = { rs.getString("name"), rs.getString("ssnNumber") };
+
+						dataModel.addRow(dataObject);
+					}
+					txtFoundCusName.setText("");
+					txtFoundCusSocId.setText("");
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} finally {
+					try {
+						pst.close();
+						rs.close();
+
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
-			}
 			}
 		});
 		btnFindCustomer.setBackground(Color.GREEN);
 		btnFindCustomer.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnFindCustomer.setBounds(220, 96, 104, 32);
 		panelFindCustomer.add(btnFindCustomer);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 181, 509, 120);
 		panelFindCustomer.add(scrollPane);
-		
+
 		tableCustomer = new JTable();
 		scrollPane.setViewportView(tableCustomer);
-		tableCustomer.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int sr=tableCustomer.getSelectedRow();
-				String name=tableCustomer.getValueAt(sr, 0).toString();
-				String ssnNumber=tableCustomer.getValueAt(sr, 1).toString();
-				CreateInvoice.lblFoundedCusName.setText(name);
-				CreateInvoice.lblFoundedCusSsý.setText(ssnNumber);
-			}
-		});
-		dataModel=new DefaultTableModel();
-		Object columns[]= {"name","ssnNumber"};
+		dataModel = new DefaultTableModel();
+		Object columns[] = { "name", "ssnNumber" };
 		dataModel.setColumnIdentifiers(columns);
 		tableCustomer.setModel(dataModel);
-		
-		
-		
+		loadCustomerToTable();
+
 		JButton btnChooseCustomer = new JButton("Choose");
 		btnChooseCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int sr = tableCustomer.getSelectedRow();
+				String name = tableCustomer.getValueAt(sr, 0).toString();
+				String ssnNumber = tableCustomer.getValueAt(sr, 1).toString();
+				int returnValue = 0;
+				returnValue = JOptionPane.showConfirmDialog(null,
+						"Your Selection is \n" + "Name :" + name + "\n" + "Social Id :" + ssnNumber, "Are you sure?",
+						JOptionPane.YES_NO_OPTION);
+				if (returnValue == JOptionPane.YES_OPTION) {
+					CreateInvoiceForm.lblFoundedCusName.setText(name);
+					CreateInvoiceForm.lblFoundedCusSsý.setText(ssnNumber);
+				}
 			}
 		});
 		btnChooseCustomer.setToolTipText("Choose Customer");
@@ -192,99 +180,62 @@ public class CustomerForm extends JFrame {
 		btnChooseCustomer.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnChooseCustomer.setBounds(209, 350, 155, 37);
 		panelFindCustomer.add(btnChooseCustomer);
-		
-		JPanel panelInsertCustomer = new JPanel();
-		panelInsertCustomer.setBackground(SystemColor.activeCaptionBorder);
-		panelInsertCustomer.setBounds(643, 28, 535, 416);
-		contentPane.add(panelInsertCustomer);
-		panelInsertCustomer.setLayout(null);
-		
-		JButton btnSaveNewCustomer = new JButton("Save");
-		btnSaveNewCustomer.addActionListener(new ActionListener() {
-			PreparedStatement st=null;
-			public void actionPerformed(ActionEvent e) {
-				int returnValue = 0;
-		    	returnValue = JOptionPane.showConfirmDialog(null, "Are you sure To Save Invoice", "Are you sure?", JOptionPane.YES_NO_OPTION);
-		    	if (returnValue == JOptionPane.YES_OPTION) {
-					if(txtCusName.getText().isEmpty() || mskedTxtCusSsý.getText().isEmpty()) {
-						JOptionPane.showMessageDialog(btnSaveNewCustomer, "WARNING", "Please Enter All Area",JOptionPane.WARNING_MESSAGE);
-					}else {
-						String name=txtCusName.getText();
-						String ssnNumber=mskedTxtCusSsý.getText();
-						String query="INSERT INTO customer(name,ssnNumber) VALUES"+"("+"'"+name+"'"+","+"'"+ssnNumber+"'"+")";
-						try {
-							st=DbHelper.conn.prepareStatement(query);
-							boolean state=st.execute();//true if the first result is a ResultSetobject; false if the first result is an updatecount or there is no result
-							if(state) {
-								JOptionPane.showMessageDialog(btnSaveNewCustomer, "WARNING", "NOT INSERTED",JOptionPane.WARNING_MESSAGE);
-							}
-							else {
-								JOptionPane.showMessageDialog(btnSaveNewCustomer, "INFO", "INSERTED NEW CUSTOMER",JOptionPane.INFORMATION_MESSAGE);
-							}
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}finally {
-							try {
-								st.close();
-							} catch (SQLException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}
-					}
-		    	}
-		    		
-		    	else if (returnValue == JOptionPane.NO_OPTION) {
-		    		JOptionPane.showMessageDialog(null, "Not Saved Customer");
-		    	}
 
-		    	clearInputs();
-				
-				
+		JButton btnGetAllCus = new JButton("Get All Customer");
+		btnGetAllCus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dataModel.setNumRows(0);
+				loadCustomerToTable();
 			}
-			private void clearInputs() {
-				txtCusName.setText("");
-				mskedTxtCusSsý.setText("");
+		});
+		btnGetAllCus.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnGetAllCus.setBackground(Color.GREEN);
+		btnGetAllCus.setBounds(19, 311, 155, 32);
+		panelFindCustomer.add(btnGetAllCus);
+		
+		txtFoundCusSocId = new JTextField();
+		txtFoundCusSocId.setBounds(356, 36, 126, 32);
+		panelFindCustomer.add(txtFoundCusSocId);
+		txtFoundCusSocId.setColumns(10);
+
+		JButton btnSaveNewCustomer = new JButton("New Customer");
+		btnSaveNewCustomer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				NewCustomerForm newCustomerForm = new NewCustomerForm();
+				newCustomerForm.setVisible(true);
+				newCustomerForm.setIconImage(new ImageIcon(getClass().getResource("/Images/post.jpg")).getImage());
 			}
 		});
 		btnSaveNewCustomer.setBackground(Color.GREEN);
-		btnSaveNewCustomer.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnSaveNewCustomer.setBounds(213, 298, 129, 32);
-		panelInsertCustomer.add(btnSaveNewCustomer);
-		
-		
+		btnSaveNewCustomer.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnSaveNewCustomer.setBounds(660, 156, 309, 71);
+		contentPane.add(btnSaveNewCustomer);
+	}
+
+	private void loadCustomerToTable() {
+		Statement pst = null;
+		ResultSet rs = null;
+		String query = "SELECT * FROM customer";
 		try {
-			mskedTxtCusSsý = new JFormattedTextField(new MaskFormatter("###########"));
-			mskedTxtCusSsý.setBounds(231, 181, 141, 32);
-			panelInsertCustomer.add(mskedTxtCusSsý);
-			
-			JLabel lblNewCusName = new JLabel("Name : ");
-			lblNewCusName.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblNewCusName.setBounds(106, 114, 94, 25);
-			panelInsertCustomer.add(lblNewCusName);
-			
-			JLabel lblNewCusSsý = new JLabel("SSI : ");
-			lblNewCusSsý.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblNewCusSsý.setBounds(107, 188, 76, 25);
-			panelInsertCustomer.add(lblNewCusSsý);
-			
-			txtCusName = new JTextField();
-			txtCusName.setBounds(231, 113, 141, 32);
-			panelInsertCustomer.add(txtCusName);
-			txtCusName.setColumns(10);
-			
-			JLabel lblNewLabel = new JLabel("Add New Customer");
-			lblNewLabel.setForeground(Color.DARK_GRAY);
-			lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 18));
-			lblNewLabel.setBounds(177, 10, 183, 39);
-			panelInsertCustomer.add(lblNewLabel);
-		} catch (ParseException e) {
+			pst = DbHelper.conn.createStatement();
+			rs = pst.executeQuery(query);
+			while (rs.next()) {
+				Object data[] = { rs.getString(2), rs.getString(3) };
+				dataModel.addRow(data);
+			}
+
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				pst.close();
+				rs.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
-		
-		
+
 	}
 }

@@ -4,7 +4,7 @@
         <name>muhammed</name>
         <ssnNumber>31233413123</ssnNumber>
     </customer>
-    <invoiceData>
+    <invoiceData number="12345" seri="ABC">
         <item>
             <name>Telephone</name>
             <quantity>2</quantity>
@@ -17,8 +17,8 @@
             <unitPrice>8000</unitPrice>
             <Amount>16000</Amount>
         </item>
-        <totalAmount>1000</totalAmount>
-        <discount>26000.0</discount>
-        <amountToPay>null25000.0</amountToPay>
+        <totalAmount>26000.0</totalAmount>
+        <discount>1000</discount>
+        <amountToPay>25000.0</amountToPay>
     </invoiceData>
 </uploadSystem>
